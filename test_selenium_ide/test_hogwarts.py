@@ -24,7 +24,11 @@ class TestHogwarts:
         url = "https://testerhome.com/"
         self.driver.get(url)
         # 点击社区,添加显式等待，等待"社区"按钮可点击的时候，进行点击
-        WebDriverWait(self.driver,10).until(EC.element_to_be_clickable((By.XPATH,'//*[@id="main-nav-menu"]/ul/li[1]/a')))
+        WebDriverWait(self.driver,10).until(
+            EC.element_to_be_clickable(
+                (By.XPATH,'//*[@id="main-nav-menu"]/ul/li[1]/a')
+            )
+        )
         self.driver.find_element_by_xpath('//*[@id="main-nav-menu"]/ul/li[1]/a').click()
 
         # 上面这样写，真的好臭长哦
