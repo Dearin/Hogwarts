@@ -1,4 +1,4 @@
-from test_selenium_file.base import Base
+from Selenium.test_selenium_file.base import Base
 from time import sleep
 
 class TestFile(Base):

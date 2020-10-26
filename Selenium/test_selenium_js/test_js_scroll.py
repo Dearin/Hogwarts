@@ -1,4 +1,4 @@
-from test_selenium_js.base import Base
+from Selenium.test_selenium_js.base import Base
 from time import sleep
 import pytest
 
