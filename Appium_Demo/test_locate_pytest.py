@@ -1,6 +1,7 @@
 
 from appium import webdriver
 from time import sleep
+import pytest
 
 class TestLocate:
 
@@ -22,6 +23,7 @@ class TestLocate:
     def teardown(self):
         self.driver.quit()
 
+    @pytest.mark.skip
     def test_locate_app(self):
         print("测试搜索用例")
         '''
@@ -42,4 +44,31 @@ class TestLocate:
         assert current_price > 200
         print("测试结束啦")
         sleep(2)
+
+
+    def test_attr(self):
+        '''
+        1 - 进入首页
+        2 - 定位首页的搜索框
+        3 - 判断搜索框是是否可用，并检查它的name值
+        4 - 打印这个搜索框的size
+        5 - 向搜索框输入alibaba
+        6 - 判断阿里巴巴是否可见
+        7 - 可见，则打印搜索成功；否则打印搜索失败
+        :return:
+        '''
+
+        ele = self.driver.find_element_by_id("com.xueqiu.android:id/tv_search")
+        print(ele.size)
+        print(ele.location)
+        print(ele.size)
+        search_enable = ele.is_enabled()
+        if search_enable == True:
+            ele.click()
+            alibaba_ele = self.driver.find_element_by_id('com.xueqiu.android:id/search_input_text').send_keys("alibaba")
+            displayed_ele = alibaba_ele.get_attribute("displayed")
+            if displayed_ele == "true":
+                print("搜索成功")
+            else:
+                print("搜索失败")
 
