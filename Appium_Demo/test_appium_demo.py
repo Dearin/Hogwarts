@@ -21,5 +21,10 @@ driver.implicitly_wait(3)
 input_ele.send_keys("alibabab")
 input_ele.click()
 sleep(3)
+driver.back()
+driver.back()
+sleep(2)
+
+driver.quit()
 
 
