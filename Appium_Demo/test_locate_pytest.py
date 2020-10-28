@@ -2,6 +2,8 @@
 from appium import webdriver
 from time import sleep
 import pytest
+from appium.webdriver.common.touch_action import TouchAction
+
 
 class TestLocate:
 
@@ -45,7 +47,7 @@ class TestLocate:
         print("测试结束啦")
         sleep(2)
 
-
+    @pytest.mark.skip
     def test_attr(self):
         '''
         1 - 进入首页
@@ -71,4 +73,22 @@ class TestLocate:
                 print("搜索成功")
             else:
                 print("搜索失败")
+
+
+    def test_touchaction(self):
+        window_rect = self.driver.get_window_rect()
+        print(window_rect)
+        x_width = window_rect['width']
+        y_height = window_rect['height']
+        x_start = int(x_width/2)
+        y_start = int(y_height * 4/5)
+        y_end = int(y_height * 1/5)
+        print(x_start,y_start,y_end)
+        action = TouchAction(self.driver)
+        action.press(x=x_start,y=y_start).wait(200).move_to(x=x_start,y=y_end).wait(200).release().perform()
+        sleep(2)
+        # 看不见页面滑动，但是用例执行通过了
+
+
+
 
