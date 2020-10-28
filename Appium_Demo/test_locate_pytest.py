@@ -2,6 +2,7 @@
 from appium import webdriver
 from time import sleep
 import pytest
+from appium.webdriver.common.mobileby import MobileBy
 from appium.webdriver.common.touch_action import TouchAction
 
 
@@ -17,6 +18,7 @@ class TestLocate:
         desire_caps["noReset"] = "true"  # 这里就避免来每次打开弹出的同意窗口
         desire_caps["skipDeviceInitialization"] = 'true'
         desire_caps["unicodeKeyBoard"] = "true"  # 输入中文字符
+        desire_caps["automatorName"] = "automator2"  # 输入中文字符
         # 初始化驱动
         self.driver = webdriver.Remote('http://127.0.0.1:4723/wd/hub',desire_caps)
         # 设置一个隐形等待，增加代码的健壮性
@@ -74,7 +76,7 @@ class TestLocate:
             else:
                 print("搜索失败")
 
-
+    @pytest.mark.skip
     def test_touchaction(self):
         window_rect = self.driver.get_window_rect()
         print(window_rect)
@@ -89,6 +91,55 @@ class TestLocate:
         sleep(2)
         # 看不见页面滑动，但是用例执行通过了
 
+    def test_locate_senior(self):
+        print("测试搜索用例")
+        '''
+        1-打开雪球app
+        2-点击搜索框
+        3-向搜索框中输入"阿里巴巴"
+        4-获取香港阿里巴巴的股价
+        5-获取阿里巴巴的股价，并判断该股价是否大于200  - 这里需要解决的是下面的那个问题
+        '''
+        self.driver.find_element_by_id("com.xueqiu.android:id/tv_search").click()
+        self.driver.find_element_by_id('com.xueqiu.android:id/search_input_text').send_keys("阿里巴巴")
+        # 选中第一个代选项
+        # 这里有个疑问，当两个地方的resourceid完全一致但是又没有别的属性作为协助来区分该如何处理呢？
+        # 在之前的用例里，是通过点击进去更深的一层获取，这里则修改了操作，通过子节点去定位父节点的方式来获取股价
+        self.driver.find_element(MobileBy.XPATH,'//*[@resource-id="com.xueqiu.android:id/name" and @text ="阿里巴巴"]').click()
+        current_price = self.driver.find_element(MobileBy.XPATH,'//*[@resource-id="com.xueqiu.android:id/stockCode" and @text="09988"]/../../..//*[@resource-id="com.xueqiu.android:id/current_price"]').text
+        price = float(current_price)
+        print(f"阿里巴巴香港的股价是：{price}")
+        assert price > 200
+
+    def test_myinfo(self):
+        '''
+        1 - 点击我的，进入到个人信息
+        2 - 点击登陆，进入登陆页面
+        3 - 输入用户名和密码
+        4 -点击登陆
+        注意：以上全部是Uiselector来进行定位联系
+        '''
+        self.driver.find_element_by_android_uiautomator('new UiSelector().text("我的")').click()
+        self.driver.find_element_by_android_uiautomator('new UiSelector().text("帐号密码登录")').click()
+
+        self.driver.find_element_by_android_uiautomator('new UiSelector().resourceId("com.xueqiu.android:id/login_account")').send_keys("username")
+        self.driver.find_element_by_android_uiautomator('new UiSelector().resourceId("com.xueqiu.android:id/login_password")').send_keys("123456")
+        self.driver.find_element_by_android_uiautomator('new UiSelector().resourceId("com.xueqiu.android:id/button_next")').click()
+
+
+
+    def test_scroll(self):
+        # 通过多属性查找
+        # self.driver.find_element_by_android_uiautomator('new UiSelector().resourceId("com.xueqiu.android:id/tab_name").text("热门").className("android.widget.TextView")').click()
+        # 通过父查子关系查找，子查兄弟是.fromParent()
+        self.driver.find_element_by_android_uiautomator('new UiSelector().resourceId("com.xueqiu.android:id/title_container").childSelector(text("关注"))').click()
+        # 滚动，查找A股罗雷锋
+        self.driver.find_element_by_android_uiautomator('new UiScrollable('
+                                                        'new UiSelector().'
+                                                        'scrollable(true).instance(0)).'
+                                                        'scrollIntoView(new UiSelector().textContains("投基行动派").'
+                                                        'instance(0));').click()
+        sleep(3)
 
 
 
