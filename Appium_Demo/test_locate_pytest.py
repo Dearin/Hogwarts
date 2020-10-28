@@ -4,7 +4,7 @@ from time import sleep
 import pytest
 from appium.webdriver.common.mobileby import MobileBy
 from appium.webdriver.common.touch_action import TouchAction
-
+import hamcrest
 
 class TestLocate:
 
@@ -109,7 +109,9 @@ class TestLocate:
         current_price = self.driver.find_element(MobileBy.XPATH,'//*[@resource-id="com.xueqiu.android:id/stockCode" and @text="09988"]/../../..//*[@resource-id="com.xueqiu.android:id/current_price"]').text
         price = float(current_price)
         print(f"阿里巴巴香港的股价是：{price}")
-        assert price > 200
+        # 使用hamcrest进行断言
+        expect_price = 300
+        hamcrest.close_to(price,expect_price * 0.1)
 
     def test_myinfo(self):
         '''
