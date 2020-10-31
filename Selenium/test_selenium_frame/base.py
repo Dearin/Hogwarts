@@ -1,6 +1,6 @@
 import os
-
 from selenium import webdriver
+
 class Base:
 
     def setup(self):

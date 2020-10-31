@@ -1,5 +1,7 @@
-from Selenium.test_selenium_frame import Base
+
 from time import sleep
+
+from Selenium.test_selenium_frame.base import Base
 
 class TestWindows(Base):
 
