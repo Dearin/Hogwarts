@@ -8,10 +8,6 @@ from Appium_Demo.appium_pageObj.page.BasePage import BasePage
 
 
 class ContactEdit(BasePage):
-
-    def contact_update(self):
-        pass
-
     def contact_delete(self):
     # 找到对应删除按钮，点击删除
         print(self.driver.contexts)
@@ -22,3 +18,7 @@ class ContactEdit(BasePage):
     # 人员删除成功后，会返回到通讯录页面
         from Appium_Demo.appium_pageObj.page.AddressList_page import AdressListPage
         return AdressListPage(self.driver)
+
+
+    def contact_update(self):
+        pass
