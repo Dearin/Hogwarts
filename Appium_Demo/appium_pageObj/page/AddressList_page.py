@@ -33,6 +33,7 @@ class AdressListPage(BasePage):
         return ContactDetailBriefInfoProfile(self.driver)
 
     def find_contact(self,name):
+        # 删除人员，返回通讯录页面后，等待页面刷新删除后的通讯录名单
         locator = (MobileBy.XPATH,f'//*[@text="{name}"]')
         result = WebDriverWait(self.driver, 10).until(
             expected_conditions.invisibility_of_element_located(locator))
