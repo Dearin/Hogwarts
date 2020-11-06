@@ -21,10 +21,10 @@ class TestImport:
 
     def test_wework_import(self):
         # 使用cookies绕过登陆，cookies.db中的cookie,失效了需要及时更新的，
-        # cookies = self.driver.get_cookies()
-        db = shelve.open("cookies")
-        # db['cookie'] = cookies
-        cookies = db['cookie']
+        cookies = self.driver.get_cookies()
+        db = shelve.open("data/cookies")
+        db['cookie'] = cookies
+        # cookies = db['cookie']
         db.close()
         # 访问页面并注入cookie
         self.driver.get("https://work.weixin.qq.com/wework_admin/frame#index")
