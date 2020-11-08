@@ -1,0 +1,4 @@
+test_xxx:
+  - hello.a: []  # 调用hello.py模块中的a方法
+  - print: ["hello"]
+  
