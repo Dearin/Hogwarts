@@ -43,3 +43,7 @@ class BasePage:
             result = self.driver.find_element(by, locator)
         # --- 应保留的核心代代码end ---
         return result
+
+    #解析yaml
+    def parse(self,):
+        pass
