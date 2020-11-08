@@ -75,5 +75,6 @@ class MemberList_Add(BasePage):
                 self.driver.find_element(By.CSS_SELECTOR,'.ww_commonImg_PageNavArrowRightNormal').click()
         # 跳出循环则直接返回total_list
 
+
         return total_list
 
