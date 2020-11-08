@@ -1,5 +1,4 @@
 from selenium.webdriver.common.by import By
-
 from Appium_Demo.frame_demo.Pages.BasePage import BasePage
 from Appium_Demo.frame_demo.Pages.MarketPage import MarketPage
 
