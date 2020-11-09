@@ -1,0 +1,13 @@
+desire_caps:
+  platformName: "Android"
+  deviceName: "hogwarts"
+  appPackage: "com.xueqiu.android"
+  appActivity: ".view.WelcomeActivityAlias"
+  noReset: "True"
+  skipDeviceInitialization: "True"
+  skipDriverInstallation: "True"
+  unicodeKeyBoard: "True"
+
+server:
+  ip: "127.0.0.1"
+  port: "4723"
