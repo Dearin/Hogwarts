@@ -45,7 +45,7 @@ class TestJS(Base):
         #获得时间控件所在的位置
         self.driver.execute_script("date=document.getElementById('train_date');date.removeAttribute('readonly')")
         #给value赋值
-        self.driver.execute_script("document.getElementById('train_date').value = ('2020-11-01')")
+        self.driver.execute_script("document.getElementById('train_date').value = ('2020-11-20')")
         #检查时间控件是否修改
         print(self.driver.execute_script('return document.getElementById("train_date").value'))
 

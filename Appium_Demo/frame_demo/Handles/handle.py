@@ -3,7 +3,7 @@
 1- 装饰器需要先传入需要增强的方法
 
 '''
-
+import allure
 
 
 def handle_black(func):
@@ -23,6 +23,12 @@ def handle_black(func):
             instance.error_num = 0
             return result
         except Exception as e:
+            # 遇到异常，进行截图：
+            instance.driver.save_screenshot('../Datas/error.png')
+            # 读取文件，并传递到allure的日报中
+            with open('../Datas/error.png','rb') as f:
+                error_page_screenshot = f.read()
+            allure.attach(error_page_screenshot,attachment_type=allure.attachment_type.PNG)
             # 设置一个最大的查找次数，避免一直查找
             if instance.error_num > instance.max_num:
                 raise e
@@ -40,5 +46,6 @@ def handle_black(func):
             raise e
 
     return wrapper
+
 
 

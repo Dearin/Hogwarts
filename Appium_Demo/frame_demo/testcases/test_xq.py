@@ -5,4 +5,5 @@ class TestBlackList:
 
     def test_goto_search(self):
         self.main = MainPage()
-        self.main.goto_market().goto_search()
+        result = self.main.goto_market().goto_search().search()
+        assert '阿里巴巴' in result

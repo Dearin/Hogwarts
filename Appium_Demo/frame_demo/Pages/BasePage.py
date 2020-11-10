@@ -3,7 +3,7 @@ from appium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from Appium_Demo.frame_demo.Handles.handle_black import handle_black
+from Appium_Demo.frame_demo.Handles.handle import handle_black
 
 # 读取conf.yml的配置
 with open('../yamls/conf.yml') as f:
@@ -53,6 +53,15 @@ class BasePage:
         # --- 应保留的核心代代码end ---
         return result
 
-    #解析yaml
-    def parse(self,):
-        pass
+    # 进行yaml的解析:解析yaml文件并获取其中对应的方法
+    def yaml_parse(self, path, funcname):
+        with open(path,encoding='utf-8') as f:
+            data = yaml.safe_load(f)
+        self.parse(data[funcname])
+
+    def parse(self, steps):
+        for step in steps:
+            if 'click' == step['action']:
+                self.find(step['by'], step['locator']).click()
+            elif 'send' == step['action']:
+                self.find(step['by'], step['locator']).send_keys(step['content'])

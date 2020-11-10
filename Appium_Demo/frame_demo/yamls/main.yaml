@@ -1,0 +1,11 @@
+# 针对MainPage中的方法进行测试步骤驱动
+goto_market:
+  -
+    by: xpath
+    locator: '//*[@resource-id="com.xueqiu.android:id/post_status"]'
+    action: click
+
+  -
+    by: xpath
+    locator: '//*[@resource-id="android:id/tabs"]//*[@text="行情"]'
+    action: click
