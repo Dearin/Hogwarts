@@ -40,8 +40,6 @@ def handle_black(func):
                 # 如果能查找出来元素，则对元素进行操作;注意ele存放的是一个数组[()]，数组第一个为对应的元素
                 if len(ele) > 0:
                     ele[0].click()
-                    # 关闭掉弹窗后，再次查找原先的元素,这里不应该return find函数来
-                    # 其实这一步还没有很懂为啥？
                     return wrapper(*args, **kwargs)
             raise e
 
