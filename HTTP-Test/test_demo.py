@@ -4,6 +4,7 @@ import chevron
 from jsonpath import jsonpath
 from jsonschema import validate
 import json
+from requests.auth import HTTPBasicAuth
 
 from schema import Schema
 
@@ -108,3 +109,9 @@ class TestDemo:
         print(res.request.headers)
 
 
+    def test_oauth(self):
+        username ='uxsino'
+        password = 'asshole'
+        url = 'https://httpbin.ceshiren.com/basic-auth/{}/{}'.format(username, password)
+        res = requests.get(url=url, auth=HTTPBasicAuth(username, password))
+        print(res.text)
