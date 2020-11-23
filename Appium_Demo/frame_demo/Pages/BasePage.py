@@ -1,3 +1,5 @@
+import logging
+
 import yaml
 from appium import webdriver
 from selenium.webdriver.common.by import By
@@ -12,6 +14,10 @@ with open('../yamls/conf.yml') as f:
     ip = app_config["server"]["ip"]
     port = app_config["server"]["port"]
 
+
+# 日志的初始化；
+logger = logging.getLogger()
+logging.basicConfig(level=logging.info(),format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
 
 class BasePage:
     '''
@@ -46,6 +52,8 @@ class BasePage:
     @handle_black
     def find(self, by, locator=None):
         '''查找元素'''
+        logger.info(by)
+        logger.info(locator)
         if locator is None:
             result = self.driver.find_element(*by)
         else:
@@ -55,6 +63,8 @@ class BasePage:
 
     # 进行yaml的解析:解析yaml文件并获取其中对应的方法
     def yaml_parse(self, path, funcname):
+        logger.info(path)
+        logger.info(funcname)
         with open(path,encoding='utf-8') as f:
             data = yaml.safe_load(f)
         self.parse(data[funcname])
