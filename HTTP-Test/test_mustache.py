@@ -46,8 +46,9 @@ class TestMustache:
         # Output: Hello, 在这里测试一下!
 
 
-    @property
+
     def test_lambdas(self):
+        '''暂时还没有搞懂这个'''
         def first(text, render):
             # return only first occurance of items
             result = render(text)
