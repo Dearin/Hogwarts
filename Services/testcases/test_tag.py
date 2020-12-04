@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 
 import pytest
@@ -10,10 +11,11 @@ class TestTag:
     def setup_class(self):
         self.tag = Tag()
 
-    def tear_down(self):
-        # 进行数据清理
-        # 针对于新增的数据进行编辑操作等，用例结束后直接根据删除即可，达到数据清理的作用
-        pass
+    def teardown_class(self):
+        # 一次操作下来遗留的数据只有：Hogwarts组下的tag_new标签和tag1更新后的数据
+        lists = self.tag.get_corp_tag_list()
+        group_id = jsonpath(lists.json(), '$.tag_group[?(@.group_name=="Hogwarts")]')[0]['group_id']
+        self.tag.del_corp_group(group_id)
 
     @pytest.mark.skip
     def test_token(self):
@@ -21,13 +23,12 @@ class TestTag:
 
     @pytest.mark.run(order=3)
     def test_get_corp_list(self):
-       result = self.tag.get_corp_tag_list()
-       print(result.json())
-
+        result = self.tag.get_corp_tag_list()
+        print(result.json())
 
     @pytest.mark.run(order=1)
     @pytest.mark.parametrize("group_name,tag_name", [
-        ["Hogwarts", "tag_new"], ["New_Group", "tag1"], ["Hogwarts", "tag1"]
+        ["Hogwarts", "tag1"], ["New_Group", "tag_new"], ["Hogwarts", "tag2"], ["Hogwarts", "tag2"]
     ])
     def test_add_tag_name(self, group_name, tag_name):
         """
@@ -61,16 +62,16 @@ class TestTag:
             assert tag_name in self.tag.get_tags_name(group_name)
 
     @pytest.mark.run(order=2)
-    @pytest.mark.parametrize("tag_id,tag_name", [
-        ["etld41BgAAbzETHdaWvkGSZpIqwnEG-A", "tag1_new"],
-        ["etld41BgAAbzETHdaWvkGSZpIqwnEG-A", "tag1_中文"],
-        ["etld41BgAAbzETHdaWvkGSZpIqwnEG-A", "tag1[中文]"],
-    ])
-    def test_edit_corp_tag(self, tag_id, tag_name):
-        self.tag.edit_corp_tag(tag_id, tag_name)
+    @pytest.mark.parametrize("tag_name", ["tag1_new", "tag1_中文", "tag1[中文]"])
+    def test_edit_corp_tag(self, tag_name, group_name="Hogwarts"):
+        tag_id = self.tag.get_tag_id(group_name)[0]
+        print(f"tag_id是{tag_id}")
+        res = self.tag.edit_corp_tag(tag_id, tag_name)
+        print(res)
         # 返回的数据校验
-        lists = self.tag.get_corp_tag_list()
-        assert jsonpath(lists.json(), f"$..[?(@.name=='{tag_name}')]")[0]['name'] == tag_name
+        tags = self.tag.get_tags_name(group_name)
+        print(tags)
+        assert tag_name in tags
 
     @pytest.mark.run(order=4)
     @pytest.mark.parametrize("group_name", ["New_Group"])

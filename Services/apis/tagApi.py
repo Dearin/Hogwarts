@@ -64,14 +64,14 @@ class Tag:
         res = requests.post(url=url, params=params, json=json)
         return res.json()
 
-    def edit_corp_tag(self, id, tag_name):
+    def edit_corp_tag(self, tag_id, tag_name):
         url = "https://qyapi.weixin.qq.com/cgi-bin/externalcontact/edit_corp_tag"
         params = {
             "access_token": self.token
         }
         json = {
-            "id": id,
-            "name": tag_name,
+            "id": tag_id,
+            "name": tag_name
         }
         res = requests.post(url=url, params=params, json=json)
         return res.json()
@@ -88,6 +88,18 @@ class Tag:
         assert res.status_code == 200
         assert res.json()['errcode'] == 0
         assert res.json()['errmsg'] == 'ok'
+
+    def del_corp_group(self, group_id):
+        url = 'https://qyapi.weixin.qq.com/cgi-bin/externalcontact/del_corp_tag'
+        params = {
+            "access_token": self.token
+        }
+        json = {
+            "group_id": group_id
+        }
+        res = requests.post(url=url, params=params, json=json)
+        assert res.status_code == 200
+        assert res.json()['errcode'] == 0
 
     def get_groups_names(self):
         """
