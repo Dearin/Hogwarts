@@ -26,14 +26,26 @@ class TestTag:
         :param tag_name: 标签名称，同一标签组下tag_name不可以重复
         :return:
         """
-        pre_lists = self.tag.get_corp_tag_list()
-        pre_groups = jsonpath(pre_lists.json(), "$.tag_group..group_name")
-        print(f"当前所有的组名为：{pre_groups}")
-        pre_tags = []
-        self.tag.add_corp_tag(group_name, tag_name)
-        now_lists = self.tag.get_corp_tag_list()
-        print(f"添加后的列表{now_lists.json()}")
-        now_tags = jsonpath(now_lists.json(), '$.tag_group[?(@group_name=="Hogwarts")]')
-        print(f"当前所有的tags是{now_tags}")
-        # 针对添加的数据进行校验(成功和不成功)
-        # 当group_name存在时：
+        # 获取添加前的标签组名
+        pre_groups = self.tag.get_groups_names()
+        print(pre_groups)
+        # 针对添加的数据进行校验
+        if group_name in pre_groups:
+            tags = self.tag.get_tags_name(group_name)
+            # 若group_name在添加前就存在，则判断新增的tag名称是否存在
+            if tag_name in tags:
+                # 若存在，则进行添加操作后，返回数据中tag_name是不会重复的。
+                self.tag.add_corp_tag(group_name, tag_name)
+                new_tags = self.tag.get_tags_name(group_name)
+                assert len(tags) == len(new_tags)
+
+            else:
+                # 若需新增的tag在已有组中不存在，则添加成功，返回数据中应有对应的tag
+                self.tag.add_corp_tag(group_name, tag_name)
+                new_tags = self.tag.get_tags_name(group_name)
+                assert tag_name in new_tags
+        # 当标签组名不存在时，则直接进行组和tag的新增
+        else:
+            self.tag.add_corp_tag(group_name, tag_name)
+            assert group_name in self.tag.get_groups_names()
+            assert tag_name in self.tag.get_tags_name(group_name)

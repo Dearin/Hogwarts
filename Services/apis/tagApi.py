@@ -67,11 +67,19 @@ class Tag:
         return res.json()
 
     def get_groups_names(self):
+        """
+        获取当前所有的标签组
+        :return: groups 便签组列表
+        """
         result = self.get_corp_tag_list()
-        groups = jsonpath(result, '$.tag_group..group_name')
+        groups = jsonpath(result.json(), '$.tag_group..group_name')
         return groups
 
     def get_tags_name(self, group_name):
+        """根据组名来查询对应的标签
+        :returns tags 标签列表
+        """
         result = self.get_corp_tag_list()
-        tags = jsonpath(result, '$.tag_group.(?@group_name=="Hogwarts").tag..name')
+        group = jsonpath(result.json(), f'$.tag_group[?(@.group_name=="{group_name}")]')[0]
+        tags = jsonpath(group, '$.tag..name')
         return tags
