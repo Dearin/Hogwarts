@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import requests
 from jsonpath import jsonpath
 
@@ -46,10 +48,6 @@ class Tag:
     def add_corp_tag(self, group_name, tag_name):
         """
         如果要向指定的标签组下添加标签，需要填写group_id参数；
-        如果要创建一个全新的标签组以及标签，则需要通过group_name参数指定新标签组名称，如果填写的groupname已经存在，则会在此标签组下新建标签。
-        如果填写了group_id参数，则group_name和标签组的order参数会被忽略。
-        不支持创建空标签组。
-        标签组内的标签不可同名，如果传入多个同名标签，则只会创建一个。
         :return:
         """
         url = 'https://qyapi.weixin.qq.com/cgi-bin/externalcontact/add_corp_tag'
@@ -65,6 +63,31 @@ class Tag:
         }
         res = requests.post(url=url, params=params, json=json)
         return res.json()
+
+    def edit_corp_tag(self, id, tag_name):
+        url = "https://qyapi.weixin.qq.com/cgi-bin/externalcontact/edit_corp_tag"
+        params = {
+            "access_token": self.token
+        }
+        json = {
+            "id": id,
+            "name": tag_name,
+        }
+        res = requests.post(url=url, params=params, json=json)
+        return res.json()
+
+    def del_corp_tag(self, tag_id):
+        url = 'https://qyapi.weixin.qq.com/cgi-bin/externalcontact/del_corp_tag'
+        params = {
+            "access_token": self.token
+        }
+        json = {
+            "tag_id": tag_id
+        }
+        res = requests.post(url=url, params=params, json=json)
+        assert res.status_code == 200
+        assert res.json()['errcode'] == 0
+        assert res.json()['errmsg'] == 'ok'
 
     def get_groups_names(self):
         """
@@ -83,3 +106,14 @@ class Tag:
         group = jsonpath(result.json(), f'$.tag_group[?(@.group_name=="{group_name}")]')[0]
         tags = jsonpath(group, '$.tag..name')
         return tags
+
+    def get_tag_id(self, group_name):
+        result = self.get_corp_tag_list()
+        result = result.json()['tag_group']
+        tag_id = []
+        for i in result:
+            if i['group_name'] == group_name:
+                tag = i['tag']
+                for i in tag:
+                    tag_id.append(i['id'])
+        return tag_id
