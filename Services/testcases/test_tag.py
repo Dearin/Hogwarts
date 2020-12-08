@@ -83,7 +83,7 @@ class TestTag:
     @pytest.mark.run(order=5)
     @pytest.mark.parametrize("tag_name", ["tag1_new", "tag1_中文", "tag1[中文]"])
     def test_edit_corp_tag(self, tag_name, group_name="Hogwarts"):
-        tag_id = self.tag.get_tag_id(group_name)[0]
+        tag_id = self.tag.get_tag_id_by_group_name(group_name)[0]
         print(f"tag_id是{tag_id}")
         res = self.tag.edit_corp_tag(tag_id, tag_name)
         print(res)

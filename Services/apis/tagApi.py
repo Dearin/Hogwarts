@@ -45,7 +45,7 @@ class Tag:
         res = requests.post(url=url, params=params)
         return res
 
-    def add_corp_tag(self, group_name, tag_name):
+    def add_corp_tag(self, group_name, tag_name, **kwargs):
         """
         如果要向指定的标签组下添加标签，需要填写group_id参数；
         :return:
@@ -54,13 +54,13 @@ class Tag:
         params = {
             'access_token': self.token
         }
+
         json = {
             "group_name": group_name,
-            "tag": [{
-                "name": tag_name
-            }
-            ]
+            "tag": tag_name,
+            **kwargs
         }
+
         res = requests.post(url=url, params=params, json=json)
         return res.json()
 
@@ -98,8 +98,8 @@ class Tag:
             "group_id": group_id
         }
         res = requests.post(url=url, params=params, json=json)
-        assert res.status_code == 200
-        assert res.json()['errcode'] == 0
+        print(res.json())
+        return res
 
     def get_groups_names(self):
         """
@@ -119,7 +119,7 @@ class Tag:
         tags = jsonpath(group, '$.tag..name')
         return tags
 
-    def get_tag_id(self, group_name):
+    def get_tag_id_by_group_name(self, group_name):
         result = self.get_corp_tag_list()
         result = result.json()['tag_group']
         tag_id = []
@@ -129,3 +129,63 @@ class Tag:
                 for i in tag:
                     tag_id.append(i['id'])
         return tag_id
+
+    def get_group_id_by_name(self, group_name):
+        # 查询元素是否存在，如果不存在，报错
+        for group in self.get_corp_tag_list().json()["tag_group"]:
+            if group_name in group["group_name"]:
+                return group["group_id"]
+        print("group name not in group")
+        return ""
+
+    def is_group_id_exist(self, group_id):
+        """判断需要删除的id是是否存在"""
+        # 查询元素是否存在，如果不存在，报错
+        for group in self.get_corp_tag_list().json()["tag_group"]:
+            print(group)
+            if group_id in group["group_id"]:
+                return True
+        print("group_id not in group")
+        return False
+
+    def add_n_detect(self, group_name, tag_name, **kwargs):
+        """进行添加方法的加固
+        1、如果添加一个标签时报错，则进行处理
+        """
+        res = self.add_corp_tag(group_name, tag_name)
+        # 报错信息为tag已经存在
+        if res["errcode"] == 40071:
+            group_id = self.get_group_id_by_name(group_name)
+            # 如果显示该id不存在
+            if not group_id:
+                # 元素不存在，则接口有问题
+                return "接口异常"
+            else:
+                # 元素存在，则进行删除
+                self.del_corp_group([group_id])
+                self.add_corp_tag(group_name, tag_name, **kwargs)
+        result = self.get_group_id_by_name(group_name)
+        if not result:
+            print("add_method is not success")
+        return result
+
+    def delete_n_detect(self, group_ids):
+        """针对删除的方法做加固
+        1、如果遇到删除的对象不存在,则新增一个对象，并将该对象存入一个已删除列表中方便查询管理
+        2、如果遇到删除的对象存在时，则进行删除，并将该对象存入一个已删除列表
+        """
+        deleted_group_ids = []
+        # 进行删除
+        res = self.del_corp_group(group_ids)
+        if res.json()["errcode"] == 40068:
+            for group_id in group_ids:
+                # invalid code
+                if not self.is_group_id_exist(group_id):
+                    group_tmp = self.add_n_detect(group_name="TMP00123",
+                                                  tag_name=[{"name": "TAG1"}])
+                    deleted_group_ids.append(group_tmp)
+                # 如果标签存在，则存入标签组
+                else:
+                    deleted_group_ids.append(group_id)
+            # 重新进行一次删除
+            self.del_corp_group(deleted_group_ids)
