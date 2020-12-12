@@ -1,0 +1,64 @@
+{
+    "config": {
+        "name": "testcase description",
+        "variables": {}
+    },
+    "teststeps": [
+        {
+            "name": "/trpx8/jeecg-boot/sys/getCheckCode",
+            "request": {
+                "url": "https://wgtest1-rkpc.tgovcloud.com/trpx8/jeecg-boot/sys/getCheckCode",
+                "params": {
+                    "_t": "1607779471"
+                },
+                "method": "GET",
+                "headers": {
+                    "sec-ch-ua": "\"Google Chrome\";v=\"87\", \" Not;A Brand\";v=\"99\", \"Chromium\";v=\"87\"",
+                    "sec-ch-ua-mobile": "?0",
+                    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+                    "Sec-Fetch-Site": "same-origin",
+                    "Sec-Fetch-Mode": "cors",
+                    "Sec-Fetch-Dest": "empty"
+                }
+            },
+            "validate": [
+                {
+                    "eq": [
+                        "status_code",
+                        200
+                    ]
+                },
+                {
+                    "eq": [
+                        "headers.Content-Type",
+                        "application/json;charset=UTF-8"
+                    ]
+                },
+                {
+                    "eq": [
+                        "content.success",
+                        true
+                    ]
+                },
+                {
+                    "eq": [
+                        "content.message",
+                        "操作成功！"
+                    ]
+                },
+                {
+                    "eq": [
+                        "content.code",
+                        0
+                    ]
+                },
+                {
+                    "eq": [
+                        "content.timestamp",
+                        "1607779471277"
+                    ]
+                }
+            ]
+        }
+    ]
+}

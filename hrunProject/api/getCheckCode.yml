@@ -1,0 +1,46 @@
+#name：接口名称，命名可随意，没有什么作用
+#variables：变量信息，格式为key: value（注意冒号后面有一个空格，这是ymal文件规定的格式）
+#request：请求信息
+#url：请求地址
+#method：请求方法
+#header：请求头
+#json：请求参数 ，格式为key: value，value一般引用变量或函数，格式为：${var}、
+#${func()}
+#validate：结果断言
+config:
+    name: testcase description
+    variables: {}
+teststeps:
+-   name: /trpx8/jeecg-boot/sys/getCheckCode
+    request:
+        headers:
+            Sec-Fetch-Dest: empty
+            Sec-Fetch-Mode: cors
+            Sec-Fetch-Site: same-origin
+            User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36
+                (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36
+            sec-ch-ua: '"Google Chrome";v="87", " Not;A Brand";v="99", "Chromium";v="87"'
+            sec-ch-ua-mobile: ?0
+        method: GET
+        params:
+            _t: '1607779471'
+        url: https://wgtest1-rkpc.tgovcloud.com/trpx8/jeecg-boot/sys/getCheckCode
+    validate:
+    -   eq:
+        - status_code
+        - 200
+    -   eq:
+        - headers.Content-Type
+        - application/json;charset=UTF-8
+    -   eq:
+        - content.success
+        - true
+    -   eq:
+        - content.message
+        - 操作成功！
+    -   eq:
+        - content.code
+        - 0
+    -   eq:
+        - content.timestamp
+        - '1607779471277'
